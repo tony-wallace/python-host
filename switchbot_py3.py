@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import argparse
 import struct
 import sys
@@ -30,6 +32,8 @@ class Driver(object):
         'press' : '\x57\x01\x00',
         'on'    : '\x57\x01\x01',
         'off'   : '\x57\x01\x02',
+        'down'  : '\x57\x01\x03',
+        'up'    : '\x57\x01\x04',
     }
 
     def __init__(self, device, bt_interface=None, timeout_secs=None):
@@ -74,6 +78,9 @@ def main():
     parser.add_argument('--interface', '-i', dest='interface', required=False, default=None,
                         help="Name of the bluetooth adapter (default: hci0 or whichever is the default)")
 
+    parser.add_argument('--command', '-c', dest='command', required=False, default='press',
+                        choices=['press', 'on', 'off', 'down', 'up'], help="Command to be sent to device (default: press)")
+
     opts, args = parser.parse_known_args(sys.argv[1:])
 
     if opts.scan:
@@ -101,7 +108,7 @@ def main():
     driver.connect()
     print('Connected!')
 
-    driver.run_command('press')
+    driver.run_command(opts.command)
     print('Command execution successful')
 
 
